@@ -1,0 +1,46 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+
+    {% if categories %}
+        <form>
+            <div class="form-group">
+                <label for="category">Choose a Category:</label>
+                <select class="form-control col-2" name="category" id="category">
+                    <option value="all">All</option>
+                    {% for category in categories %}
+                        <option value="{{ category.0 }}">{{ category.1 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <input class="btn btn-primary" type="submit" value="Submit">
+        </form>
+    {% endif %}
+
+    <div class="grid">
+        {% for listing in listings %}
+            {% if listing.closed %}
+            <div class="listing-content closed-listing">
+            {% else %}
+            <div class="listing-content">
+            {% endif %}
+                <div class="image-container">
+                    <img src="{{ listing.image_url }}" alt="No Image Provided.">
+                </div>
+
+                <div class="listing-description">
+                    <a class="title-link" href="{% url 'listing' listing.pk %}">{{ listing.product_name }}</a>
+                    <p>{{ listing.description|truncatewords:10|linebreaksbr}}</p>
+                </div>
+
+                <div class="listing-information">
+                    <strong>Price:</strong> {{ listing.get_highest_bid.value }} $
+                    <span style="color: #555; float: right">{{ listing.date_created }}</span>
+                </div>
+            </div>
+        {% empty %}
+            There doesn't seem to be any listings here.
+        {% endfor %}
+    </div>
+{% endblock %}

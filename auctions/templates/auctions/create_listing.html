@@ -1,0 +1,15 @@
+{% extends "auctions/layout.html" %}
+{% load widget_tweaks %}
+
+{% block body %}
+    <form method="post" class="create-form">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {% render_field field class="form-control" placeholder=field.label autofocus="true" name=field.name %}
+                </div>
+            {% endfor %}
+            <input class="btn btn-primary" type="submit" value="Create Listing">
+    </form>
+{% endblock %}

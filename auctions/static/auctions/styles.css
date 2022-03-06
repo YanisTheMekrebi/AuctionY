@@ -1,0 +1,101 @@
+body {
+    padding: 10px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-auto-rows: 400px;
+    gap: 20px;
+    padding: 25px;
+}
+
+.listing-content {
+    position: relative;
+    background-color: #eee;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+}
+
+.listing-content > .image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #bbb;
+    border-radius: 10px;
+    margin: 10px;
+    height: 200px;
+}
+
+.image-container > img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.listing-content > .listing-description {
+    text-align: center;
+    padding: 15px;
+}
+
+.listing-content > .listing-information {
+    position: absolute;
+    width: 100%;
+    padding: 10px;
+    bottom: 15px;
+}
+
+.title-link, .title-link:hover {
+    font-size: 24px;
+    color: #222;
+}
+
+.full-listing-information {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 10px;
+    grid-auto-rows: minmax(350px, auto);
+    padding: 15px;
+}
+
+@media (max-width: 768px) {
+    .full-listing-information {
+        grid-template-columns: 1fr;
+    }
+}
+
+.full-listing-information > img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.full-listing-description, .listing-comments {
+    margin: 20px;
+    font-size: 18px;
+    border-top: 1px solid #bbb;
+}
+
+.create-form {
+    padding: 15px;
+}
+
+.errorlist {
+    list-style-type: none;
+    padding: 10px;
+    width: 50%;
+    color: #cc0000;
+    background-color: #FFBABA;
+    border: 1px solid #cc0000;
+}
+
+.closed-listing {
+    background-color: #FFBABA;
+    border-color: #da5252;
+}
+
+.comment {
+    margin: 25px;
+}
+
+.comment > .comment-content {
+    padding-left: 15px;
+}

@@ -1,0 +1,107 @@
+{% extends "auctions/layout.html" %}
+{% load widget_tweaks %}
+
+{% block body %}
+    <div class="full-listing-information">
+        <img src="{{ listing.image_url }}" alt="No Image Provided.">
+        <div>
+            <h1>{{ listing.product_name }}</h1>
+            <h2>Listed by {{ listing.seller.username }}</h2>
+            <ul>
+                <li>
+                    <strong>Price:</strong> {{ listing.get_highest_bid.value }} $
+                </li>
+                <li>
+                    <strong>Category:</strong> {{ listing.category }}.
+                </li>
+                <li>
+                    <span style="color: #555">Date Listed: {{ listing.date_created }}</span>
+                </li>
+            </ul>
+
+            {% if not listing.closed %}
+            
+                {% if user.is_authenticated %}
+                    {% if listing in user.listings.all %}
+                        <p>
+                            You can close this listing by clicking <a href="{% url 'close' listing.id %}">here.</a>
+                        </p>
+                    {% endif %}
+
+                    {{ listing.bids.count }} bid(s) so far, 
+                    with the biggest one placed by {{ listing.get_highest_bid.bidder.username }}.
+
+                        <form method="post">
+                            {% csrf_token %}
+                            {% for field in place_bid_form %}
+                                <div class="form-group">
+                                    {{ field.label_tag }}
+                                    {% render_field field class="form-control" placeholder=field.label %}
+                                </div>
+                            {% endfor %}
+                            <input type="submit" class="btn btn-primary" value="Submit Bid">
+                        </form>
+
+                        {% if listing in user.watchlist.all %}
+                            <a href="{% url 'modify_watchlist' listing.id %}?how=remove">Remove from Watchlist.</a>
+                        {% else %}
+                            <a href="{% url 'modify_watchlist' listing.id %}?how=add">Add to Watchlist.</a>
+                        {% endif %}
+                {% else %}
+                    You must be <a href="{% url 'login' %}?next={{request.path}}">logged in</a> to place a bid on this item
+                    or add it to your watchlist.
+                {% endif %}
+
+            {% else %}
+
+                <h3>This listing is now closed.</h3>
+                <ul>
+                    <li><strong>Winner:</strong> {{ listing.get_highest_bid.bidder }} </li>
+                </ul>
+
+                {% if listing in user.watchlist.all %}
+                    <a href="{% url 'modify_watchlist' listing.id %}?how=remove">Remove from Watchlist.</a>
+                {% else %}
+                    <a href="{% url 'modify_watchlist' listing.id %}?how=add">Add to Watchlist.</a>
+                {% endif %}
+
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="full-listing-description">
+        <h3>Description</h3>
+        <p>{{ listing.description|linebreaks }}</p>
+    </div>
+
+    <div class="listing-comments">
+        <h3>Comments</h3>
+
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'add_comment' listing.id %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <textarea class="form-control" name="content" placeholder="Add comment"></textarea>
+                </div>
+                <input class="btn btn-primary" type="submit" value="Add comment">
+            </form>
+        {% else %}
+            You must be <a href="{% url 'login' %}?next={{request.path}}">logged in</a> to comment on this listing.<br>
+        {% endif %}
+
+        {% for comment in comments_list %}
+            <div class="comment">
+                <strong>{{ comment.commenter }}</strong>
+                <span style="color: #555">{{ comment.date_created }}</span>
+                <div class="comment-content">
+                    <p>{{ comment.content|linebreaks }}</p>
+                </div>
+                {% if comment.commenter == user %}
+                    <a href="{% url 'delete_comment' comment.id %}">Delete Comment</a>
+                {% endif %}
+            </div>
+        {% empty %}
+            There doesn't seem to be any comments yet...
+        {% endfor %}
+    </div>
+{% endblock %}
