@@ -31,22 +31,25 @@
                     {{ listing.bids.count }} bid(s) so far, 
                     with the biggest one placed by {{ listing.get_highest_bid.bidder.username }}.
 
-                        <form method="post">
-                            {% csrf_token %}
-                            {% for field in place_bid_form %}
-                                <div class="form-group">
-                                    {{ field.label_tag }}
-                                    {% render_field field class="form-control" placeholder=field.label %}
-                                </div>
-                            {% endfor %}
-                            <input type="submit" class="btn btn-primary" value="Submit Bid">
-                        </form>
+                    {% for error in place_bid_form.errors.values %}
+                        {{ error }}
+                    {% endfor %}
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for field in place_bid_form %}
+                            <div class="form-group">
+                                {{ field.label_tag }}
+                                {% render_field field class="form-control" placeholder=field.label %}
+                            </div>
+                        {% endfor %}
+                        <input type="submit" class="btn btn-primary" value="Submit Bid">
+                    </form>
 
-                        {% if listing in user.watchlist.all %}
-                            <a href="{% url 'modify_watchlist' listing.id %}?how=remove">Remove from Watchlist.</a>
-                        {% else %}
-                            <a href="{% url 'modify_watchlist' listing.id %}?how=add">Add to Watchlist.</a>
-                        {% endif %}
+                    {% if listing in user.watchlist.all %}
+                        <a href="{% url 'modify_watchlist' listing.id %}?how=remove">Remove from Watchlist.</a>
+                    {% else %}
+                        <a href="{% url 'modify_watchlist' listing.id %}?how=add">Add to Watchlist.</a>
+                    {% endif %}
                 {% else %}
                     You must be <a href="{% url 'login' %}?next={{request.path}}">logged in</a> to place a bid on this item
                     or add it to your watchlist.
